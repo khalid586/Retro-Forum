@@ -105,7 +105,7 @@ function showLatest(data){
                             </div>
                             
                             <div class = "flex items-center justify-start mt-4 xl:mt-0 p-4 rounded-xl">
-                                <button  onclick="addPost(${detum.id},${detum.view_count})" class=" flex items-center  gap-2 text-green-500 font-bold text-xl rounded-xl"><img class="w-[40px] h-[30px] bg-green-500 rounded-full p-2" src="assets/envelope-open-regular.svg" alt="">Mark as read</button>
+                                <button id = 'btn-${detum.id}'  onclick="addPost(${detum.id},${detum.view_count})" class="show-btn flex items-center  gap-2 text-green-500 font-bold text-xl rounded-xl"><img class="w-[40px] h-[30px] bg-green-500 rounded-full p-2" src="assets/envelope-open-regular.svg" alt="">Mark as read</button>
                             </div>
                         </div>
                     </div>
@@ -125,30 +125,53 @@ function showLatest(data){
         <p class = "font-extrabold text-4xl"> No matches found </p>
         `
     }
+    buttonClick()
     Loader.classList.toggle('hidden',true);
     Loader.classList.toggle('flex',false);
     
 }
 
+function buttonClick(){
+    const buttons = document.querySelectorAll('.show-btn');
+    console.log(buttons)
+
+    buttons.forEach(button =>{
+        button.addEventListener('click',()=>{
+            console.log('clicked')
+            const Btn = document.getElementById(`${button.id}`)
+            Btn.innerHTML = "Marked as read";
+            Btn.classList.toggle('text-green-500',false)
+            Btn.classList.toggle('text-red-500',true)
+        })
+    })
+}
+
+
 function addPost(id,views){
 
-    const post = document.getElementById(`title-${id}`);
-    postTitle = post.innerText;
-    ++count;
-    const readPost = document.createElement('div');
+    const buttonId = `btn-${id}`;
+    const Btn = document.getElementById(buttonId);
 
-    const currCount = document.getElementById('Count');
-    currCount.innerText = count;
+    if(Btn.classList.contains('text-green-500')){
+        const post = document.getElementById(`title-${id}`);
+        postTitle = post.innerText;
+        ++count;
+        const readPost = document.createElement('div');
+    
+        const currCount = document.getElementById('Count');
+        currCount.innerText = count;
+    
+        readPost.innerHTML = `
+            <div class = "xl:flex justify-between bg-white p-4 my-4 rounded-lg shadow-md border-b-green-500 border-b-4 border-l-2 border-l-green-400">
+                <p class = "xl:w-1/2 text-lg black font-semibold mt-2">${postTitle}</p>
+                <p class = "flex gap-1 text-gray-500 items-center"><img width = "30px" src = "assets/eye-regular.svg">${views}</p>
+            </div>
+        `;
+    
+        const readPosts = document.getElementById('readPosts');
+        readPosts.appendChild(readPost);
+    }
 
-    readPost.innerHTML = `
-        <div class = "xl:flex justify-between bg-white p-4 my-4 rounded-lg shadow-md border-b-green-500 border-b-4 border-l-2 border-l-green-400">
-            <p class = "xl:w-1/2 text-lg black font-semibold mt-2">${postTitle}</p>
-            <p class = "flex gap-1 text-gray-500 items-center"><img width = "30px" src = "assets/eye-regular.svg">${views}</p>
-        </div>
-    `;
-
-    const readPosts = document.getElementById('readPosts');
-    readPosts.appendChild(readPost);
 }
 
 let categoryName = '';
