@@ -1,6 +1,7 @@
 let count = 0;
 const Loader = document.getElementById('loader');
 const POSTS = document.getElementById('posts');
+let readId = [];
 
 const addLoader = () => {
     POSTS.innerHTML = ``;
@@ -77,14 +78,16 @@ function showLatest(data){
             const Data = document.createElement('p');
             const Title = detum.title;
             const color = detum.isActive?"bg-green-500":"bg-red-500";
-            // Data.innerHTML = `
+
+            // console.log(detum.id);
             
-            // <p>The title is : <span id="title-${detum.id}"> ${detum?.title}</apan><p>
-    
-            // <button onclick="addPost(${detum.id})"> Click </button>
-            // <br>
-            // `;
-    
+            if(readId.find(item => item == detum.id)){
+                btn = "<button class = 'flex items-center  gap-2 text-red-500 font-bold text-xl rounded-xl'>Marked as read</button>"
+            }
+            else{
+                btn = `<button id='btn-${detum.id}' onclick='addPost(${detum.id},${detum.view_count})' class='show-btn flex items-center gap-2 text-green-500 font-bold text-xl rounded-xl'><img class='w-[40px] h-[30px] bg-green-500 rounded-full p-2' src='assets/envelope-open-regular.svg' alt=''>Mark as read</button>`;
+            }
+
             Data.innerHTML = `
                 <div class="xl:flex px-2  w-full my-4 rounded-xl shadow-md border-b-green-500 border-b-4 border-l-2 border-l-green-400">
             
@@ -105,7 +108,7 @@ function showLatest(data){
                             </div>
                             
                             <div class = "flex items-center justify-start mt-4 xl:mt-0 p-4 rounded-xl">
-                                <button id = 'btn-${detum.id}'  onclick="addPost(${detum.id},${detum.view_count})" class="show-btn flex items-center  gap-2 text-green-500 font-bold text-xl rounded-xl"><img class="w-[40px] h-[30px] bg-green-500 rounded-full p-2" src="assets/envelope-open-regular.svg" alt="">Mark as read</button>
+                                ${btn}
                             </div>
                         </div>
                     </div>
@@ -118,6 +121,7 @@ function showLatest(data){
 
         } )
         
+        buttonClickInitializer();
         console.log(data.posts[0])
     }
     else{
@@ -125,15 +129,14 @@ function showLatest(data){
         <p class = "font-extrabold text-4xl"> No matches found </p>
         `
     }
-    buttonClick()
     Loader.classList.toggle('hidden',true);
     Loader.classList.toggle('flex',false);
     
 }
 
-function buttonClick(){
+function buttonClickInitializer(){
     const buttons = document.querySelectorAll('.show-btn');
-    console.log(buttons)
+    // console.log(buttons)
 
     buttons.forEach(button =>{
         button.addEventListener('click',()=>{
@@ -157,6 +160,7 @@ function addPost(id,views){
         postTitle = post.innerText;
         ++count;
         const readPost = document.createElement('div');
+        readId.push(id);
     
         const currCount = document.getElementById('Count');
         currCount.innerText = count;
